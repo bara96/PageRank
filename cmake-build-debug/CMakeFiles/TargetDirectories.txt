@@ -1,3 +1,0 @@
-C:/Bara/Unive/PageRank/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Bara/Unive/PageRank/cmake-build-debug/CMakeFiles/PageRank.dir
-C:/Bara/Unive/PageRank/cmake-build-debug/CMakeFiles/rebuild_cache.dir
