@@ -6,7 +6,7 @@
 using namespace std;
 
 int main() {
-    CSR csr = CSR("../src/test.txt");
+    CSR csr = CSR("../src/web-NotreDame.txt");
     csr.compute();
     PageRank pr = PageRank(csr);
     pr.compute();
