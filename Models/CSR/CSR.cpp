@@ -18,12 +18,12 @@ void CSR::setFilename(const string &filenameVal) {
     CSR::filename = filenameVal;
 }
 
-const string &CSR::getMapColInd() const {
-    return map_col_ind;
+const string &CSR::getMapColIndFilename() const {
+    return map_col_ind_filename;
 }
 
-const string &CSR::getMapRowPtr() const {
-    return map_row_ptr;
+const string &CSR::getMapRowPtrFilename() const {
+    return map_row_ptr_filename;
 }
 
 int CSR::getNNodes() const {
@@ -42,12 +42,12 @@ void CSR::setNEdges(int nEdges) {
     n_edges = nEdges;
 }
 
-const vector<float> &CSR::getValues() const {
+vector<float> &CSR::getValues() {
     return values;
 }
 
-void CSR::setValues(const vector<float> &values) {
-    CSR::values = values;
+void CSR::setValues(const vector<float> &valuesVal) {
+    CSR::values = valuesVal;
 }
 
 int CSR::getRowPointerSize() const {
@@ -67,8 +67,6 @@ void CSR::setColIndexSize(int colIndexSize) {
 }
 
 FILE* CSR::parseFile(const string &filenameVal) {
-    cout << "PARSER BEGIN" << endl;
-
     FILE *f = Utilities::openFile(filenameVal, "r");
     char character;
     char str[100];
@@ -80,15 +78,14 @@ FILE* CSR::parseFile(const string &filenameVal) {
     }
     ungetc(character, f);
 
-    cout << "PARSER END" << endl;
+    cout << "N° of Nodes: " << n_nodes << ", N° of Edges:: " << n_edges << endl;
 
     return f;
 }
 
-void CSR::computeCSR() {
+void CSR::compute() {
     int fromnode, tonode;
     int current_row = 0;
-    int i = 0;
     // Elements for row
     int elem_row = 0;
     // Cumulative numbers of elements
@@ -96,12 +93,14 @@ void CSR::computeCSR() {
     int temp_r;
     //values
     values = vector<float>();
-
+    //files
     FILE *mainFile, *column_index_file, *row_pointer_file;
 
+    cout << "COMPUTING CSR START" << endl;
+
     mainFile = parseFile(filename);
-    column_index_file = fopen(map_col_ind.c_str(), "w+");
-    row_pointer_file = fopen(map_row_ptr.c_str(), "w+");
+    column_index_file = fopen(map_col_ind_filename.c_str(), "w+");
+    row_pointer_file = fopen(map_row_ptr_filename.c_str(), "w+");
 
     // The first row always starts at position 0
     temp_r = 0;
@@ -119,16 +118,18 @@ void CSR::computeCSR() {
             elem_row = 0;
             current_row = fromnode;
         }
-        values.insert(values.begin() + i, 1.0);
+        values.push_back(1.0);
         fwrite(&tonode, sizeof(int), 1, column_index_file);
         elem_row++;
-        i++;
     }
-    
+
     temp_r = current_elem + elem_row - 1;
     fwrite(&temp_r, sizeof(int), 1, row_pointer_file);
     fclose(row_pointer_file);
     fclose(column_index_file);
-    row_pointer_size = current_row+2;
-    col_index_size = i;
+    fclose(mainFile);
+    row_pointer_size = current_row + 2;
+    col_index_size = (int) values.size();
+
+    cout << "COMPUTING CSR START END" << endl;
 }

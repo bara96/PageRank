@@ -15,8 +15,8 @@ using namespace std;
 
 class CSR {
 private:
-    const string map_col_ind = "./map_col_ind";
-    const string map_row_ptr = "./map_row_ptr";
+    const string map_col_ind_filename = "./map_col_ind_filename";
+    const string map_row_ptr_filename = "./map_row_ptr_filename";
     string filename;
     int n_nodes = 0;
     int n_edges = 0;
@@ -33,9 +33,9 @@ public:
 
     void setFilename(const string &filenameVal);
 
-    const string &getMapColInd() const;
+    const string &getMapColIndFilename() const;
 
-    const string &getMapRowPtr() const;
+    const string &getMapRowPtrFilename() const;
 
     int getNNodes() const;
 
@@ -45,7 +45,7 @@ public:
 
     void setNEdges(int nEdges);
 
-    const vector<float> &getValues() const;
+    vector<float> &getValues();
 
     void setValues(const vector<float> &values);
 
@@ -60,7 +60,7 @@ public:
     /**
      * Compute the CSR
      */
-    void computeCSR();
+    void compute();
 
 private:
     /**
