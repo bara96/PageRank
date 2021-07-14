@@ -6,9 +6,10 @@
 #define PAGERANK_UTILITIES_H
 
 #include <iostream>
-#include <cerrno>
-#include <cstdio>
 #include <vector>
+#include <sys/mman.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 using namespace std;
 
@@ -27,6 +28,13 @@ public:
      * @return
      */
     static int* openMMap(const string& filename, const int& mapPointerSize);
+
+    /**
+     * Close a mmap file pointer
+     * @param pointer
+     * @param pointerSize
+     */
+    static void closeMMap(int* pointer, int pointerSize);
 
     /***
      * Print an array of elements

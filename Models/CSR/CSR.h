@@ -14,13 +14,13 @@
 using namespace std;
 
 class CSR {
-private:
-    const string map_col_ind_filename = "./map_col_ind_filename";
-    const string map_row_ptr_filename = "./map_row_ptr_filename";
+protected:
+    string map_col_ind_filename = "./map_col_ind_filename";
+    string map_row_ptr_filename = "./map_row_ptr_filename";
     string filename;
     int n_nodes = 0;
     int n_edges = 0;
-    vector<float> values;
+    vector<double> values;
     int row_pointer_size = 0;
     int col_index_size = 0;
 
@@ -45,9 +45,9 @@ public:
 
     void setNEdges(int nEdges);
 
-    vector<float> &getValues();
+    vector<double> &getValues();
 
-    void setValues(const vector<float> &values);
+    void setValues(const vector<double> &values);
 
     int getRowPointerSize() const;
 
@@ -62,7 +62,7 @@ public:
      */
     void compute();
 
-private:
+protected:
     /**
      * parse the file, read n° of nodes/edges and remove comments row
      * @param filenameVal

@@ -4,8 +4,6 @@
 
 #include "CSR.h"
 
-#include <utility>
-
 CSR::CSR() = default;
 
 CSR::CSR(string filename) : filename(std::move(filename)) {}
@@ -42,11 +40,11 @@ void CSR::setNEdges(int nEdges) {
     n_edges = nEdges;
 }
 
-vector<float> &CSR::getValues() {
+vector<double> &CSR::getValues() {
     return values;
 }
 
-void CSR::setValues(const vector<float> &valuesVal) {
+void CSR::setValues(const vector<double> &valuesVal) {
     CSR::values = valuesVal;
 }
 
@@ -67,11 +65,14 @@ void CSR::setColIndexSize(int colIndexSize) {
 }
 
 FILE* CSR::parseFile(const string &filenameVal) {
-    FILE *f = Utilities::openFile(filenameVal, "r");
+    FILE *f = nullptr;
     char character;
     char str[100];
+
+    f = Utilities::openFile(filenameVal, "r");
     character = getc(f);
     while (character == '#'){
+        //TODO convert into C++
         fgets(str, 100 - 1, f);
         sscanf(str, "%*s %d %*s %d", &n_nodes, &n_edges);
         character = getc(f);
@@ -84,7 +85,7 @@ FILE* CSR::parseFile(const string &filenameVal) {
 }
 
 void CSR::compute() {
-    int fromnode, tonode;
+    int fromnode = 0, tonode = 0;
     int current_row = 0;
     // Elements for row
     int elem_row = 0;
@@ -92,7 +93,7 @@ void CSR::compute() {
     int current_elem = 0;
     int temp_r;
     //values
-    values = vector<float>();
+    values = vector<double>();
     //files
     FILE *mainFile, *column_index_file, *row_pointer_file;
 
@@ -107,7 +108,7 @@ void CSR::compute() {
     fwrite(&temp_r, sizeof(int), 1, row_pointer_file);
 
     while(!feof(mainFile)){
-        fscanf(mainFile,"%d%d",&fromnode,&tonode);
+        fscanf(mainFile,"%d%d", &fromnode, &tonode);
 
         // CHECK IF WE NEED TO CHANGE THE ROW
         if (fromnode > current_row) {
