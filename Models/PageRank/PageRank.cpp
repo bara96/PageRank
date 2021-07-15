@@ -34,7 +34,7 @@ void PageRank::setRankings(const vector<double> &rankingsVal) {
     PageRank::rankings = rankingsVal;
 }
 
-void PageRank::compute() {
+void PageRank::compute(bool showRanking) {
     cout << "COMPUTING PAGERANK START" << endl;
 
     cout << "- Stochastization Start" << endl;
@@ -45,8 +45,10 @@ void PageRank::compute() {
     pageRank();
     cout << "- PageRank End" << endl;
 
-    cout<< "FINAL RANKINGS" << endl;
-    Utilities::printVector(rankings);
+    if(showRanking) {
+        cout << "FINAL RANKINGS" << endl;
+        Utilities::printVector(rankings);
+    }
 
     cout << "COMPUTING PAGERANK END" << endl;
 }

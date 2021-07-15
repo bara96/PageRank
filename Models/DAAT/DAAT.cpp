@@ -15,20 +15,20 @@ void DAAT::setValues(const vector<double> &valuesVal) {
     DAAT::values = valuesVal;
 }
 
-vector<double> DAAT::topK(int k) {
+vector<pair<int, double>> DAAT::topK(int k) {
     MinHeap heap(k);
 
     for(int i=0; i<k; i++) {
-        heap.insert(values.at(i));
+        heap.insert(pair<int, double>(i, values.at(i)));
     }
     double min, score;
 
     for (int i=k+1; i<values.size(); i++) {
-        min = heap.getMin();
+        min = heap.getMin().second;
         score = values.at(i);
         if(score > min) {
             heap.extractMin();
-            heap.insert(score);
+            heap.insert(pair<int, double>(i, score));
         }
     }
 

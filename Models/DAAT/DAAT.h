@@ -18,7 +18,7 @@ public:
 
     void setValues(const vector<double> &values);
 
-    vector<double> topK(int k);
+    vector<pair<int, double>> topK(int k);
 };
 
 

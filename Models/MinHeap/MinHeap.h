@@ -9,6 +9,7 @@
 #include <vector>
 #include <algorithm>
 #include <stdexcept>
+#include <map>
 
 using namespace std;
 
@@ -17,7 +18,7 @@ protected:
     int size;
     int capacity;
 
-    vector<double> heap;
+    vector<pair<int, double>> heap;
     int parent (int i) {return (i-1) /2;};
 
     int left (int i){return 2 * i +1;}
@@ -27,15 +28,19 @@ protected:
 public:
    explicit MinHeap(int capacity);
 
-   void insert(double val);
+   void insert(pair<int, double>);
 
-    double extractMin();
+    pair<int, double> extractMin();
 
-    double getMin();
+    pair<int, double> getMin();
 
    void heapify(int i);
 
-   vector<double> getVector();
+   vector<pair<int, double>> getVector();
+
+private:
+    void postorder(vector<double> &arr, int size, int i);
+
 };
 
 

@@ -8,12 +8,18 @@ using namespace std;
 
 int main() {
 
+    //CSR csr = CSR("../src/test.txt");
     CSR csr = CSR("../src/web-NotreDame.txt");
     csr.compute();
     PageRank pr = PageRank(csr);
-    pr.compute();
+    pr.compute(false);
+
+    Utilities::printVector(pr.getRankings());
 
     DAAT daat = DAAT(pr.getRankings());
-    Utilities::printVector(daat.topK(5));
+    vector<pair<int,double>> top = daat.topK(10);
 
+    cout << "Top k:" << endl;
+    for (pair<int,double> &pair : top)
+        cout << pair.first << ": " << pair.second << endl;
 }

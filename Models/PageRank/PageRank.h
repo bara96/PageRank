@@ -31,7 +31,7 @@ public:
 
     void setRankings(const vector<double> &rankings);
 
-    void compute();
+    void compute(bool showRanking);
 
 protected:
     void stochastization();
