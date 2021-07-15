@@ -84,7 +84,7 @@ void PageRank::pageRank() {
 
     rankings = vector<double>();
 
-    // Initialize p[] vector
+    // Initialize rankings[] vector
     for(int i=0; i < csr.getNNodes(); i++){
         rankings.push_back(1.0/csr.getNNodes());
     }
@@ -120,7 +120,7 @@ void PageRank::pageRank() {
             loop= false;
         }
 
-        // Update p[]
+        // Update rankings[]
         for (int i=0; i<csr.getNNodes();i++){
             rankings.at(i) = rankings_new.at(i);
         }
