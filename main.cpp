@@ -14,8 +14,6 @@ int main() {
     PageRank pr = PageRank(csr);
     pr.compute(false);
 
-    Utilities::printVector(pr.getRankings());
-
     DAAT daat = DAAT(pr.getRankings());
     vector<pair<int,double>> top = daat.topK(10);
 
