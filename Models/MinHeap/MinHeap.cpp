@@ -1,6 +1,6 @@
 #include "MinHeap.h"
 
- 
+
 // Data structure to store a min-heap node
 
 //contructor
@@ -10,7 +10,7 @@ MinHeap::MinHeap(int capacity){
     heap.resize(capacity);
 }
 
-void MinHeap::insert (int val){
+void MinHeap::insert (double val){
     //check if thre is space in the heap
     if(size == capacity){
         cout<<"MIN HEAP FULL"<<endl;
@@ -55,11 +55,10 @@ void MinHeap::heapify(int i){
     }
 }
 
-int MinHeap::extractMin(){
+double MinHeap::extractMin(){
     //check if the heap is empty
     if(size == 0){
-        cout<<"MIN HEAP empty"<<endl;
-        return;
+        return NULL;
     }
     else if (size==1)
     {
@@ -67,7 +66,7 @@ int MinHeap::extractMin(){
         return heap[0];
     }
     else {
-        int root = heap[0];
+        double root = heap[0];
 
         heap[0]= heap[size-1];
         size--;
@@ -75,7 +74,17 @@ int MinHeap::extractMin(){
 
         return root;
     }
+}
 
+double MinHeap::getMin(){
+    //check if the heap is empty
+    if(size == 0){
+        return NULL;
+    }
+    else
+    {
+        return heap[0];
+    }
 }
 
 vector<double> MinHeap::getVector() {

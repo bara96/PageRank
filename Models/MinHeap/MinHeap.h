@@ -13,11 +13,11 @@
 using namespace std;
 
 class MinHeap {
-private:
-
+protected:
     int size;
     int capacity;
-    vector<int> heap;
+
+    vector<double> heap;
     int parent (int i) {return (i-1) /2;};
 
     int left (int i){return 2 * i +1;}
@@ -25,12 +25,13 @@ private:
     int right (int i){return 2 * i + 2;};
 
 public:
+   explicit MinHeap(int capacity);
 
-   MinHeap(int capacity);
+   void insert(double val);
 
-   void insert(int val);
+    double extractMin();
 
-   int extractMin();
+    double getMin();
 
    void heapify(int i);
 
