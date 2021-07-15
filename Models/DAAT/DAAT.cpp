@@ -3,6 +3,7 @@
 //
 
 #include "DAAT.h"
+#include "../Utilities/MinHeap.h"
 
 DAAT::DAAT(const vector<double> &values) : values(values) {}
 
@@ -15,5 +16,12 @@ void DAAT::setValues(const vector<double> &valuesVal) {
 }
 
 vector<double> DAAT::topK(int k) {
-    return vector<double>(); //TODO min heap DAAT
+    MinHeap heap(k);
+
+    for (int i = 0; i < k; i++)
+    {
+       heap.insert(rand()%100);
+      
+    }
+    return  heap.getVector(); //TODO min heap DAAT
 }
