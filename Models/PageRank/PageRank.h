@@ -11,10 +11,10 @@
 class PageRank {
 protected:
     CSR csr;
-    int *row_pointer = nullptr;
-    int *col_index = nullptr;
+    int *row_pointer = nullptr; //stores the column indexes of the elements in the val vector
+    int *col_index = nullptr;  //stores the position of the starting rows
     float dampingFactor = 0.85;
-    vector<double> rankings;
+    vector<double> p;
 
 public:
     explicit PageRank(const CSR &csr);
@@ -34,8 +34,14 @@ public:
     void compute(bool showRanking);
 
 protected:
+    /**
+     * Initialize the stochastization of the matrix
+     */
     void stochastization();
 
+    /**
+     * Do PageRank
+     */
     void pageRank();
 
 };

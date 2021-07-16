@@ -85,51 +85,55 @@ FILE* CSR::parseFile(const string &filenameVal) {
 }
 
 void CSR::compute() {
-    int fromnode = 0, tonode = 0;
-    int current_row = 0;
+    int fromNode = 0, toNode = 0;
+    int currentRow = 0;
     // Elements for row
-    int elem_row = 0;
+    int elemRow = 0;
     // Cumulative numbers of elements
-    int current_elem = 0;
-    int temp_r;
-    //values
+    int currentElem = 0;
+    //temporary row
+    int tempRow;
+    //values, initially set to 1.0 as default
     values = vector<double>();
     //files
     FILE *mainFile, *column_index_file, *row_pointer_file;
 
     cout << "COMPUTING CSR START" << endl;
 
-    mainFile = parseFile(filename);
-    column_index_file = fopen(map_col_ind_filename.c_str(), "w+");
-    row_pointer_file = fopen(map_row_ptr_filename.c_str(), "w+");
+    mainFile = parseFile(filename);     //main file with values
+    column_index_file = fopen(map_col_ind_filename.c_str(), "w+");  //col_ind file pointer
+    row_pointer_file = fopen(map_row_ptr_filename.c_str(), "w+");   //row_ptr file pointer
 
     // The first row always starts at position 0
-    temp_r = 0;
-    fwrite(&temp_r, sizeof(int), 1, row_pointer_file);
+    tempRow = 0;
+    fwrite(&tempRow, sizeof(int), 1, row_pointer_file);
 
+    //read all values from the main file
     while(!feof(mainFile)){
-        fscanf(mainFile,"%d%d", &fromnode, &tonode);
+        fscanf(mainFile, "%d%d", &fromNode, &toNode);
 
-        // CHECK IF WE NEED TO CHANGE THE ROW
-        if (fromnode > current_row) {
-            current_elem = current_elem + elem_row;
-            for (int k = current_row + 1; k <= fromnode; k++) {
-                fwrite(&current_elem, sizeof(int), 1, row_pointer_file);
+        // Chek if we need to change row
+        if (fromNode > currentRow) {
+            currentElem = currentElem + elemRow;
+            for (int k = currentRow + 1; k <= fromNode; k++) {  //store on file the row
+                fwrite(&currentElem, sizeof(int), 1, row_pointer_file);
             }
-            elem_row = 0;
-            current_row = fromnode;
+            elemRow = 0;
+            currentRow = fromNode;
         }
-        values.push_back(1.0);
-        fwrite(&tonode, sizeof(int), 1, column_index_file);
-        elem_row++;
+        values.push_back(1.0);  //add row value as 1.0 (we'll need stochatization later)
+        fwrite(&toNode, sizeof(int), 1, column_index_file); //store on file the col
+        elemRow++;
     }
+    tempRow = currentElem + elemRow - 1;
+    fwrite(&tempRow, sizeof(int), 1, row_pointer_file);
 
-    temp_r = current_elem + elem_row - 1;
-    fwrite(&temp_r, sizeof(int), 1, row_pointer_file);
     fclose(row_pointer_file);
     fclose(column_index_file);
     fclose(mainFile);
-    row_pointer_size = current_row + 2;
+
+    //save pointer sizes, for mmap
+    row_pointer_size = currentRow + 2;
     col_index_size = (int) values.size();
 
     cout << "COMPUTING CSR START END" << endl;
