@@ -27,11 +27,11 @@ void PageRank::setDampingFactor(float dampingFactorVal) {
 }
 
 const vector<double> &PageRank::getRankings() const {
-    return rankings;
+    return p;
 }
 
 void PageRank::setRankings(const vector<double> &rankingsVal) {
-    PageRank::rankings = rankingsVal;
+    PageRank::p = rankingsVal;
 }
 
 void PageRank::compute(bool showRanking) {
@@ -47,7 +47,7 @@ void PageRank::compute(bool showRanking) {
 
     if(showRanking) {
         cout << "FINAL RANKINGS" << endl;
-        Utilities::printVector(rankings);
+        Utilities::printVector(p);
     }
 
     cout << "COMPUTING PAGERANK END" << endl;
@@ -57,22 +57,24 @@ void PageRank::stochastization() {
     int row_elem = 0;
     int current_col = 0;
 
-    //initialize out_links with n 0 cells
+    // initialize out_links with n 0 cells
     vector<int> out_link(csr.getNNodes() + 1, 0);
 
-    //get out_links from mmap file
+    // init out_links from mmap file
+    // only store the values different from zero without adding "artificial" outgoing links.
     for(int i=0; i < csr.getNNodes(); i++) {
         if (row_pointer[i+1] != 0) {
             row_elem = row_pointer[i+1] - row_pointer[i];
-            out_link[i] = row_elem;
+            out_link.at(i) = row_elem;
         }
     }
 
-    //get values from mmap file
+    // Normalize, making the matrix stochastic
+    // divide each csr value for its out_link
     for(int i=0; i < csr.getNNodes(); i++) {
         row_elem = row_pointer[i+1] - row_pointer[i];
         for (int j=0; j<row_elem; j++) {
-            csr.getValues().at(current_col) = csr.getValues().at(current_col) / out_link[i];
+            csr.getValues().at(current_col) = csr.getValues().at(current_col) / out_link.at(i);
             current_col++;
         }
     }
@@ -82,38 +84,41 @@ void PageRank::pageRank() {
     int n_iterations = 0;
     bool loop=true;
 
-    rankings = vector<double>();
+    p = vector<double>();
 
-    // Initialize p[] vector
+    // Initial probability distribution
     for(int i=0; i < csr.getNNodes(); i++){
-        rankings.push_back(1.0/csr.getNNodes());
+        p.push_back(1.0 / csr.getNNodes());
     }
 
     while (loop){
-        // Initialize rankings_new as a vector of n 0.0 cells
-        vector<double> rankings_new(csr.getNNodes() + 1, 0.0);
+        // Initialize p_new as a vector of n 0.0 cells
+        vector<double> p_new(csr.getNNodes() + 1, 0.0);
 
         int row_element = 0;
         int current_col = 0;
 
-        // Page rank modified algorithm
+        // PageRank modified algorithm
+        // Initialize the teleportation matrix
         for(int i=0; i<csr.getNNodes(); i++){
             row_element = row_pointer[i+1] - row_pointer[i];
             for (int j=0; j<row_element; j++) {
-                rankings_new.at(col_index[current_col]) = rankings_new[col_index[current_col]] + csr.getValues().at(current_col) * rankings.at(i);
+                p_new.at(col_index[current_col]) = p_new[col_index[current_col]] + csr.getValues().at(current_col) * p.at(i);
                 current_col++;
             }
         }
 
-        // Adjustment to manage dangling elements
+        // Final Matrix after removing dangling nodes and adding teleportation
+        // Add a link from each page to every page and give each link a small transition probability controlled by the dampingFactor
         for(int i=0; i<csr.getNNodes(); i++){
-            rankings_new.at(i) = dampingFactor * rankings_new[i] + (1.0 - dampingFactor) / csr.getNNodes();
+            p_new.at(i) = dampingFactor * p_new.at(i) + (1.0 - dampingFactor) / csr.getNNodes();
         }
 
-        // TERMINATION: check if we have to stop
+        // termination condition is defined by the case in which two consecutive iterations of the algorithm produce two almost identical p-vectors.
+        // Compute the Euclidean distance between the vectors p and p_new
         float error = 0.0;
         for(int i=0; i<csr.getNNodes(); i++) {
-            error =  error + (float) fabs(rankings_new.at(i) - rankings.at(i));
+            error =  error + (float) fabs(p_new.at(i) - p.at(i));
         }
         //if two consecutive instances of pagerank vector are almost identical, stop
         if (error < 0.000005){
@@ -122,7 +127,7 @@ void PageRank::pageRank() {
 
         // Update p[]
         for (int i=0; i<csr.getNNodes();i++){
-            rankings.at(i) = rankings_new.at(i);
+            p.at(i) = p_new.at(i);
         }
 
         // Increase the number of iterations
