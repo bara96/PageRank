@@ -128,9 +128,11 @@ int HITS::hits(bool isHubScore){
 
     if(isHubScore) {
         csrHub = csr;
+        hubScores = v;
     }
     else {
         csrAut = csr;
+        autScores = v;
     }
 
     Utilities::closeMMap(col_index, csr.getColIndexSize());

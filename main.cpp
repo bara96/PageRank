@@ -19,6 +19,7 @@ void doHITS() {
     csrAut.compute();
 
     HITS hits = HITS(csrHub, csrAut);
+    hits.compute(false);
 
     DAAT daatHub = DAAT(hits.getHubScores());
     vector<pair<int,double>> topHub = daatHub.topK(10);
@@ -26,6 +27,7 @@ void doHITS() {
     for (pair<int,double> &pair : topHub)
         cout << pair.first << ": " << pair.second << endl;
 
+    cout << endl;
     DAAT daatAut = DAAT(hits.getAutScores());
     vector<pair<int,double>> topAut = daatAut.topK(10);
     cout << "HITS Hub Top k:" << endl;
