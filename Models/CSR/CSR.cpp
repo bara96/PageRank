@@ -16,6 +16,14 @@ void CSR::setFilename(const string &filenameVal) {
     CSR::filename = filenameVal;
 }
 
+void CSR::setMapColIndFilename(const string &mapColIndFilename) {
+    map_col_ind_filename = mapColIndFilename;
+}
+
+void CSR::setMapRowPtrFilename(const string &mapRowPtrFilename) {
+    map_row_ptr_filename = mapRowPtrFilename;
+}
+
 const string &CSR::getMapColIndFilename() const {
     return map_col_ind_filename;
 }
@@ -138,3 +146,4 @@ void CSR::compute() {
 
     cout << "COMPUTING CSR START END" << endl;
 }
+

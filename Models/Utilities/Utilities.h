@@ -10,6 +10,7 @@
 #include <sys/mman.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <cmath>
 
 using namespace std;
 
@@ -46,6 +47,14 @@ public:
             cout << value << " ";
         cout << "\n";
     }
+
+    /**
+     * Check the error between two vectors, return true if is less than the threshold
+     * @param vector
+     * @param vectorNew
+     * @return
+     */
+    static bool checkTermination(const vector<double> &vector, const std::vector<double> &vectorNew, int nNodes, double errorThreshold);
 
 };
 

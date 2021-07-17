@@ -2,13 +2,9 @@
 // Created by mbaratella on 14/07/2021.
 //
 
-#include <cmath>
 #include "PageRank.h"
 
-PageRank::PageRank(const CSR &csr) : csr(csr) {
-    row_pointer = Utilities::openMMap(csr.getMapRowPtrFilename(), csr.getRowPointerSize());
-    col_index = Utilities::openMMap(csr.getMapColIndFilename(), csr.getColIndexSize());
-}
+PageRank::PageRank(CSR csr) : csr(std::move(csr)) {}
 
 const CSR &PageRank::getCsr() const {
     return csr;
@@ -26,23 +22,28 @@ void PageRank::setDampingFactor(float dampingFactorVal) {
     PageRank::dampingFactor = dampingFactorVal;
 }
 
-const vector<double> &PageRank::getRankings() const {
+const vector<double> &PageRank::getScores() const {
     return p;
 }
 
-void PageRank::setRankings(const vector<double> &rankingsVal) {
-    PageRank::p = rankingsVal;
+void PageRank::setScores(const vector<double> &rankings) {
+    PageRank::p = rankings;
 }
 
 void PageRank::compute(bool showRanking) {
     cout << "COMPUTING PAGERANK START" << endl;
 
+    //stores the column indexes of the elements in the val vector
+    int *row_pointer = Utilities::openMMap(csr.getMapRowPtrFilename(), csr.getRowPointerSize());
+    //stores the position of the starting rows
+    int *col_index = Utilities::openMMap(csr.getMapColIndFilename(), csr.getColIndexSize());
+
     cout << "- Stochastization Start" << endl;
-    stochastization();
+    stochastization(row_pointer);
     cout << "- Stochastization End" << endl;
 
     cout << "- PageRank Start" << endl;
-    pageRank();
+    pageRank(row_pointer, col_index);
     cout << "- PageRank End" << endl;
 
     if(showRanking) {
@@ -50,10 +51,13 @@ void PageRank::compute(bool showRanking) {
         Utilities::printVector(p);
     }
 
+    Utilities::closeMMap(row_pointer, csr.getRowPointerSize());
+    Utilities::closeMMap(col_index, csr.getColIndexSize());
+
     cout << "COMPUTING PAGERANK END" << endl;
 }
 
-void PageRank::stochastization() {
+void PageRank::stochastization(const int *row_pointer) {
     int row_elem = 0;
     int current_col = 0;
 
@@ -80,9 +84,12 @@ void PageRank::stochastization() {
     }
 }
 
-void PageRank::pageRank() {
-    int n_iterations = 0;
-    bool loop=true;
+void PageRank::pageRank(const int *row_pointer, const int *col_index) {
+    int nIterations = 0;
+    bool loop = true;
+    //counters
+    int rowElement = 0;
+    int currentCol = 0;
 
     p = vector<double>();
 
@@ -91,20 +98,21 @@ void PageRank::pageRank() {
         p.push_back(1.0 / csr.getNNodes());
     }
 
+    vector<double> p_new;
     while (loop){
+        //reset variables
+        rowElement = 0;
+        currentCol = 0;
         // Initialize p_new as a vector of n 0.0 cells
-        vector<double> p_new(csr.getNNodes() + 1, 0.0);
-
-        int row_element = 0;
-        int current_col = 0;
+        p_new = vector<double>(csr.getNNodes() + 1, 0.0);
 
         // PageRank modified algorithm
         // Initialize the teleportation matrix
         for(int i=0; i<csr.getNNodes(); i++){
-            row_element = row_pointer[i+1] - row_pointer[i];
-            for (int j=0; j<row_element; j++) {
-                p_new.at(col_index[current_col]) = p_new[col_index[current_col]] + csr.getValues().at(current_col) * p.at(i);
-                current_col++;
+            rowElement = row_pointer[i + 1] - row_pointer[i];
+            for (int j=0; j < rowElement; j++) {
+                p_new.at(col_index[currentCol]) = p_new[col_index[currentCol]] + csr.getValues().at(currentCol) * p.at(i);
+                currentCol++;
             }
         }
 
@@ -115,15 +123,7 @@ void PageRank::pageRank() {
         }
 
         // termination condition is defined by the case in which two consecutive iterations of the algorithm produce two almost identical p-vectors.
-        // Compute the Euclidean distance between the vectors p and p_new
-        float error = 0.0;
-        for(int i=0; i<csr.getNNodes(); i++) {
-            error =  error + (float) fabs(p_new.at(i) - p.at(i));
-        }
-        //if two consecutive instances of pagerank vector are almost identical, stop
-        if (error < 0.000005){
-            loop= false;
-        }
+        loop = Utilities::checkTermination(p, p_new, csr.getNNodes(), 0.000005);
 
         // Update p[]
         for (int i=0; i<csr.getNNodes();i++){
@@ -131,12 +131,8 @@ void PageRank::pageRank() {
         }
 
         // Increase the number of iterations
-        n_iterations = n_iterations + 1;
+        nIterations = nIterations + 1;
     }
 
-    cout << "N° of iteration to converge: " << n_iterations << endl;
-
-    Utilities::closeMMap(col_index, csr.getColIndexSize());
-    Utilities::closeMMap(row_pointer, csr.getRowPointerSize());
-
+    cout << "N° of iteration to converge: " << nIterations << endl;
 }
