@@ -35,9 +35,9 @@ void Utilities::closeMMap(int *pointer, int pointerSize) {
 bool Utilities::checkTermination(const vector<double> &vector, const std::vector<double> &vectorNew, int nNodes, double errorThreshold) {
     // termination condition is defined by the case in which two consecutive iterations of the algorithm produce two almost identical vectors.
     // Compute the Euclidean distance between the vectors vector1 and vector2
-    float error = 0.0;
+    double error = 0.0;
     for(int i=0; i<nNodes; i++) {
-        error =  error + (float) fabs(vectorNew.at(i) - vector.at(i));
+        error =  error + fabs(vectorNew.at(i) - vector.at(i));
     }
     //if two consecutive instances of the algorithm vector are almost identical, stop
     if (error < errorThreshold){
