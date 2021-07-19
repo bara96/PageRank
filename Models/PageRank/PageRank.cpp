@@ -91,12 +91,8 @@ void PageRank::pageRank(const int *row_pointer, const int *col_index) {
     int rowElement = 0;
     int currentCol = 0;
 
-    p = vector<double>();
-
     // Initial probability distribution
-    for(int i=0; i < csr.getNNodes(); i++){
-        p.push_back(1.0 / csr.getNNodes());
-    }
+    p = vector<double>(csr.getNNodes(), 1.0 / csr.getNNodes());
 
     vector<double> p_new;
     while (loop){

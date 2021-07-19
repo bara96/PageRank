@@ -103,11 +103,10 @@ int HITS::hits(bool isHubScore){
             temp = 0.0;
         }
 
-        // normalization
+        // v_new normalization
         for(int i=0; i<csr.getNNodes(); i++){
             vSum = vSum + v_new[i];
         }
-
         for(int i=0; i<csr.getNNodes(); i++){
             v_new[i] = v_new[i] / vSum;
         }
