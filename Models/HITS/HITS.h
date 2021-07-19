@@ -27,8 +27,6 @@ public:
 
     void setCsrAut(const CSR &csrAut);
 
-    void compute(bool showRanking);
-
     const vector<double> &getHubScores() const;
 
     void setHubScores(const vector<double> &hubScores);
@@ -36,6 +34,13 @@ public:
     const vector<double> &getAutScores() const;
 
     void setAutScores(const vector<double> &autScores);
+
+    /**
+     * Compute hits
+     *
+     * @param showRanking
+     */
+    void compute(bool showRanking);
 
 protected:
     /**

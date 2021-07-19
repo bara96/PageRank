@@ -3,9 +3,25 @@
 #include "Models/CSR/CSR.h"
 #include "Models/PageRank/PageRank.h"
 #include "Models/HITS/HITS.h"
+#include "Models/InDegree/InDegree.h"
 #include "Models/DAAT/DAAT.h"
 
 using namespace std;
+
+void doPageRank() {
+    //CSR csr = CSR("../src/test.txt");
+    CSR csr = CSR("../src/web-NotreDame.txt");
+    csr.compute();
+    PageRank pr = PageRank(csr);
+    pr.compute(false);
+
+    DAAT daat = DAAT(pr.getScores());
+    vector<pair<int,double>> top = daat.topK(10);
+
+    cout << "PageRank Top k:" << endl;
+    for (pair<int,double> &pair : top)
+        cout << pair.first << ": " << pair.second << endl;
+}
 
 void doHITS() {
     CSR csrHub = CSR("../src/web-NotreDame.txt");
@@ -35,23 +51,23 @@ void doHITS() {
         cout << pair.first << ": " << pair.second << endl;
 }
 
-void doPageRank() {
+void doInDegree() {
     //CSR csr = CSR("../src/test.txt");
-    CSR csr = CSR("../src/web-NotreDame.txt");
+    CSR csr = CSR("../src/web-NotreDame-transpose.txt");
     csr.compute();
-    PageRank pr = PageRank(csr);
-    pr.compute(false);
+    InDegree inDegree = InDegree(csr);
+    inDegree.compute(false);
 
-    DAAT daat = DAAT(pr.getScores());
+    DAAT daat = DAAT(inDegree.getScores());
     vector<pair<int,double>> top = daat.topK(10);
 
-    cout << "PageRank Top k:" << endl;
+    cout << "InDegree Top k:" << endl;
     for (pair<int,double> &pair : top)
         cout << pair.first << ": " << pair.second << endl;
 }
 
 int main() {
 
-    doHITS();
+    doInDegree();
 
 }
