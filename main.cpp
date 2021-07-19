@@ -30,7 +30,7 @@ void doHITS() {
     cout << endl;
     DAAT daatAut = DAAT(hits.getAutScores());
     vector<pair<int,double>> topAut = daatAut.topK(10);
-    cout << "HITS Hub Top k:" << endl;
+    cout << "HITS Authority Top k:" << endl;
     for (pair<int,double> &pair : topAut)
         cout << pair.first << ": " << pair.second << endl;
 }
