@@ -73,9 +73,9 @@ vector<pair<int, double>> doHITS(HITS::COMPUTE_MODE mode, int topK, bool showTop
     }
 
     if(mode == HITS::hub)
-        return topAut;
-    else
         return topHub;
+    else
+        return topAut;
 }
 
 vector<pair<int, double>> doInDegree(int topK, bool showTop) {
@@ -85,7 +85,7 @@ vector<pair<int, double>> doInDegree(int topK, bool showTop) {
     inDegree.compute(false);
 
     DAAT daat = DAAT(inDegree.getScores());
-    
+
     vector<pair<int,double>> top = daat.topK(topK);
 
     if(showTop) {
@@ -96,26 +96,28 @@ vector<pair<int, double>> doInDegree(int topK, bool showTop) {
     return top;
 }
 
-void doAll() {
-    vector<pair<int, double>> topPageRank = doPageRank(30, false);
-    vector<pair<int, double>> topHITSAut = doHITS(HITS::authority, 30, false);
-    vector<pair<int, double>> topInDegree = doInDegree(30, false);
+void doAll(int topK) {
+    vector<pair<int, double>> topPageRank = doPageRank(topK, false);
+    vector<pair<int, double>> topHITSAut = doHITS(HITS::authority, topK, false);
+    vector<pair<int, double>> topInDegree = doInDegree(topK, false);
 
     double jaccard_pr_hits = Utilities::jaccard(topPageRank, topHITSAut);
     double jaccard_pr_degree = Utilities::jaccard(topPageRank, topInDegree);
     double jaccard_hits_degree = Utilities::jaccard(topHITSAut, topInDegree);
 
+    cout << endl;
+    cout << "JACCARD RESULTS:" << endl;
     cout << "Jaccard PageRank - HITS Authority: " << jaccard_pr_hits << endl;
     cout << "Jaccard PageRank - InDegree: " << jaccard_pr_degree << endl;
     cout << "Jaccard HITS Authority - InDegree: " << jaccard_hits_degree << endl;
-
 }
 
 int main() {
+    int topK = 30;
     // Start measuring time
     auto begin = std::chrono::high_resolution_clock::now();
 
-    doAll();
+    doAll(topK);
 
     // Stop measuring time and calculate the elapsed time
     auto end = std::chrono::high_resolution_clock::now();

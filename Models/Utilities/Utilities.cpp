@@ -49,11 +49,11 @@ bool Utilities::checkTermination(const vector<double> &vector, const std::vector
 
 double Utilities::jaccard(const vector<pair<int, double>> &scores1, const vector<pair<int, double>> &scores2) {
     double sum = 0.0;
-    int nNodes = scores1.size();
+    double nNodes = min(scores1.size(), scores2.size());
 
     for(int i=0; i<nNodes; i++){
         for(int j=0; j<nNodes; j++){
-            if(scores1.at(i).second == scores2.at(j).second){
+            if(scores1.at(i).first == scores2.at(j).first){
                 sum = sum + 1.0;
             }
         }
