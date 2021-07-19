@@ -31,6 +31,11 @@ public:
 
     void setScores(const vector<double> &rankings);
 
+    /**
+     * Compute pagerank
+     *
+     * @param showRanking
+     */
     void compute(bool showRanking);
 
 protected:

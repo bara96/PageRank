@@ -56,6 +56,15 @@ public:
      */
     static bool checkTermination(const vector<double> &vector, const std::vector<double> &vectorNew, int nNodes, double errorThreshold);
 
+    /**
+     * Compute Jaccard coefficient
+     *
+     * @param scores1
+     * @param scores2
+     * @param nNodes
+     * @return
+     */
+    static double jaccard(const vector<double> &scores1, const vector<double> &scores2, const int &nNodes);
 };
 
 

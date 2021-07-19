@@ -46,3 +46,17 @@ bool Utilities::checkTermination(const vector<double> &vector, const std::vector
     else
         return true;
 }
+
+double Utilities::jaccard(const vector<double> &scores1, const vector<double> &scores2, const int &nNodes) {
+    double sum = 0.0;
+
+    for(int i=0; i<nNodes; i++){
+        for(int j=0; j<nNodes; j++){
+            if(scores1.at(i) == scores2.at(j)){
+                sum = sum + 1.0;
+            }
+        }
+    }
+
+    return sum / (nNodes * 2 - sum);
+}
