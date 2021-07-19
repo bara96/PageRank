@@ -33,6 +33,10 @@ public:
 
     void setFilename(const string &filenameVal);
 
+    void setMapColIndFilename(const string &mapColIndFilename);
+
+    void setMapRowPtrFilename(const string &mapRowPtrFilename);
+
     const string &getMapColIndFilename() const;
 
     const string &getMapRowPtrFilename() const;

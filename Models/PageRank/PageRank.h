@@ -5,19 +5,19 @@
 #ifndef PAGERANK_PAGERANK_H
 #define PAGERANK_PAGERANK_H
 
-#include "../Utilities//Utilities.h"
-#include "../CSR//CSR.h"
+#include <cmath>
+#include <utility>
+#include "../Utilities/Utilities.h"
+#include "../CSR/CSR.h"
 
 class PageRank {
 protected:
     CSR csr;
-    int *row_pointer = nullptr; //stores the column indexes of the elements in the val vector
-    int *col_index = nullptr;  //stores the position of the starting rows
     float dampingFactor = 0.85;
     vector<double> p;
 
 public:
-    explicit PageRank(const CSR &csr);
+    explicit PageRank(CSR csr);
 
     const CSR &getCsr() const;
 
@@ -27,22 +27,27 @@ public:
 
     void setDampingFactor(float dampingFactor);
 
-    const vector<double> &getRankings() const;
+    const vector<double> &getScores() const;
 
-    void setRankings(const vector<double> &rankings);
+    void setScores(const vector<double> &rankings);
 
     void compute(bool showRanking);
 
 protected:
     /**
      * Initialize the stochastization of the matrix
+     *
+     * @param row_pointer
      */
-    void stochastization();
+    void stochastization(const int *row_pointer);
 
     /**
-     * Do PageRank
+     * Compute main PageRank algorithm
+     *
+     * @param row_pointer
+     * @param col_index
      */
-    void pageRank();
+    void pageRank(const int *row_pointer, const int *col_index);
 
 };
 
