@@ -5,6 +5,8 @@
 #include "DAAT.h"
 #include "../MinHeap/MinHeap.h"
 
+DAAT::DAAT() = default;
+
 DAAT::DAAT(const vector<double> &values) : values(values) {}
 
 const vector<double> &DAAT::getValues() const {

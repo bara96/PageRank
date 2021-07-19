@@ -47,12 +47,13 @@ bool Utilities::checkTermination(const vector<double> &vector, const std::vector
         return true;
 }
 
-double Utilities::jaccard(const vector<double> &scores1, const vector<double> &scores2, const int &nNodes) {
+double Utilities::jaccard(const vector<pair<int, double>> &scores1, const vector<pair<int, double>> &scores2) {
     double sum = 0.0;
+    int nNodes = scores1.size();
 
     for(int i=0; i<nNodes; i++){
         for(int j=0; j<nNodes; j++){
-            if(scores1.at(i) == scores2.at(j)){
+            if(scores1.at(i).second == scores2.at(j).second){
                 sum = sum + 1.0;
             }
         }

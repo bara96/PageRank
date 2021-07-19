@@ -17,7 +17,11 @@ protected:
     vector<double> autScores;
 
 public:
-    HITS(CSR csrHub, CSR csrAut);
+    enum COMPUTE_MODE { all, hub, authority };
+
+    HITS();
+
+    explicit HITS(CSR csrHub, CSR csrAut);
 
     const CSR &getCsrHub() const;
 
@@ -35,12 +39,13 @@ public:
 
     void setAutScores(const vector<double> &autScores);
 
-    /**
-     * Compute hits
-     *
-     * @param showRanking
-     */
-    void compute(bool showRanking);
+   /**
+    * Compute hits
+    *
+    * @param computeHub : if true compute hub scores, otherwise compute authority scores
+    * @param showRanking
+    */
+    void compute(COMPUTE_MODE computeHub, bool showRanking);
 
 protected:
     /**

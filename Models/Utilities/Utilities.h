@@ -64,7 +64,7 @@ public:
      * @param nNodes
      * @return
      */
-    static double jaccard(const vector<double> &scores1, const vector<double> &scores2, const int &nNodes);
+    static double jaccard(const vector<pair<int, double>> &scores1, const vector<pair<int, double>> &scores2);
 };
 
 

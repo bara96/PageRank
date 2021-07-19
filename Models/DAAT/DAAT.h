@@ -12,6 +12,8 @@ protected:
     vector<double> values;
 
 public:
+    DAAT();
+
     explicit DAAT(const vector<double> &values);
 
     const vector<double> &getValues() const;

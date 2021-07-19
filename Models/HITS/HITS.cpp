@@ -4,6 +4,8 @@
 
 #include "HITS.h"
 
+HITS::HITS() = default;
+
 HITS::HITS(CSR csrHub, CSR csrAut) : csrHub(std::move(csrHub)), csrAut(std::move(csrAut)) {}
 
 const CSR &HITS::getCsrHub() const {
@@ -38,23 +40,31 @@ void HITS::setAutScores(const vector<double> &autScoresVal) {
     HITS::autScores = autScoresVal;
 }
 
-void HITS::compute(bool showRanking) {
+void HITS::compute(COMPUTE_MODE mode, bool showRanking) {
     cout << "COMPUTING HITS START" << endl;
 
-    cout << "- Hub Ranking Start" << endl;
-    hits(true);
-    cout << "- Hub Ranking End" << endl;
+    if(mode == all || mode == hub) {
+        cout << "- Hub Ranking Start" << endl;
+        hits(true);
+        cout << "- Hub Ranking End" << endl;
+    }
 
-    cout << "- Authority Ranking Start" << endl;
-    hits(false);
-    cout << "- Authority Ranking End" << endl;
+    if(mode == all || mode == authority) {
+        cout << "- Authority Ranking Start" << endl;
+        hits(false);
+        cout << "- Authority Ranking End" << endl;
+    }
 
     if(showRanking) {
         cout << "FINAL RANKINGS" << endl;
-        cout << "- Hub Rankings:" << endl;
-        Utilities::printVector(hubScores);
-        cout << "- Hub Rankings:" << endl;
-        Utilities::printVector(autScores);
+        if(mode == all || mode == hub) {
+            cout << "- Hub Rankings:" << endl;
+            Utilities::printVector(hubScores);
+        }
+        if(mode == all || mode == authority) {
+            cout << "- Authority Rankings:" << endl;
+            Utilities::printVector(autScores);
+        }
     }
 
     cout << "COMPUTING HITS END" << endl;
