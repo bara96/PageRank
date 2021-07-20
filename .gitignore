@@ -2,3 +2,5 @@
 .idea/
 cmake-build*
 .vscode/
+
+.clion.source.upload.marker
