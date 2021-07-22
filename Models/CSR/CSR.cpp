@@ -80,7 +80,6 @@ FILE* CSR::parseFile(const string &filenameVal) {
     f = Utilities::openFile(filenameVal, "r");
     character = getc(f);
     while (character == '#'){
-        //TODO convert into C++
         fgets(str, 100 - 1, f);
         sscanf(str, "%*s %d %*s %d", &n_nodes, &n_edges);
         character = getc(f);
