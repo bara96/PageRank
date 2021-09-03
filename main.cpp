@@ -96,12 +96,12 @@ vector<pair<int, double>> doInDegree(int topK, bool showTop) {
     return top;
 }
 
-void doAll(int topK) {
-    vector<pair<int, double>> topPageRank = doPageRank(topK, false);
+void doAll(int topK, bool showTop = false) {
+    vector<pair<int, double>> topPageRank = doPageRank(topK, showTop);
     cout << endl;
-    vector<pair<int, double>> topHITSAut = doHITS(HITS::authority, topK, false);
+    vector<pair<int, double>> topHITSAut = doHITS(HITS::authority, topK, showTop);
     cout << endl;
-    vector<pair<int, double>> topInDegree = doInDegree(topK, false);
+    vector<pair<int, double>> topInDegree = doInDegree(topK, showTop);
     cout << endl;
 
     double jaccard_pr_hits = Utilities::jaccard(topPageRank, topHITSAut);

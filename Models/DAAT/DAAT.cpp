@@ -27,7 +27,7 @@ vector<pair<int, double>> DAAT::topK(int k) {
     }
 
     // DAAT algorithm
-    for (int i=k+1; i<values.size(); i++) {
+    for (int i=k; i<values.size(); i++) {
         min = heap.getMin().second;     // get current heap minimum
         score = values.at(i);   //current score
         if(score > min) {
