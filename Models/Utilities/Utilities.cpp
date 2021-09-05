@@ -8,7 +8,7 @@ FILE* Utilities::openFile(const string& filename, const string& mode) {
     FILE *file = nullptr;
     file = fopen(filename.c_str(), mode.c_str());
     if (file == nullptr){
-        cerr << "Cannot openFile the file" << endl;
+        cerr << "Cannot open the file" << endl;
         exit(1);
     }
     return file;

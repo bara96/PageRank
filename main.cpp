@@ -10,13 +10,16 @@
 using namespace std;
 
 vector<pair<int,double>> doPageRank(int topK, bool showTop) {
-    //CSR csr = CSR("../src/test.txt");
-    CSR csr = CSR("../src/web-NotreDame.txt");
+    CSR csr = CSR("/Users/carra95/Desktop/progetto_orlando_torsello/PageRank/src/test.txt");
+    //CSR csr = CSR("/Users/carra95/Desktop/progetto_orlando_torsello/PageRank/src/web-NotreDame.txt");
     csr.compute();
     PageRank pr = PageRank(csr);
     pr.compute(false);
 
     DAAT daat = DAAT(pr.getScores());
+   if (topK <= 30) {
+       topK = pr.getScores().size()/2;
+   }
     vector<pair<int,double>> top = daat.topK(topK);
 
     if(showTop) {
@@ -30,7 +33,7 @@ vector<pair<int,double>> doPageRank(int topK, bool showTop) {
 vector<pair<int, double>> doHITS(HITS::COMPUTE_MODE mode, int topK, bool showTop) {
     CSR csrHub = CSR();
     if(mode == HITS::all || mode == HITS::hub) {
-        csrHub = CSR("../src/web-NotreDame.txt");
+        csrHub = CSR("/Users/carra95/Desktop/progetto_orlando_torsello/PageRank/src/web-NotreDame.txt");
         csrHub.setMapColIndFilename(csrHub.getMapColIndFilename() + "_hub");
         csrHub.setMapRowPtrFilename(csrHub.getMapRowPtrFilename() + "_hub");
         csrHub.compute();
@@ -38,7 +41,8 @@ vector<pair<int, double>> doHITS(HITS::COMPUTE_MODE mode, int topK, bool showTop
 
     CSR csrAut = CSR();
     if(mode == HITS::all || mode == HITS::authority) {
-        csrAut = CSR("../src/web-NotreDame-transpose.txt");
+        csrAut = CSR("/Users/carra95/Desktop/progetto_orlando_torsello/PageRank/src/web-NotreDame.txt");
+        csrAut.transposeCSR();
         csrAut.setMapColIndFilename(csrAut.getMapColIndFilename() + "_aut");
         csrAut.setMapRowPtrFilename(csrAut.getMapRowPtrFilename() + "_aut");
         csrAut.compute();
@@ -79,10 +83,9 @@ vector<pair<int, double>> doHITS(HITS::COMPUTE_MODE mode, int topK, bool showTop
 }
 
 vector<pair<int, double>> doInDegree(int topK, bool showTop) {
-    CSR csr = CSR("../src/web-NotreDame-transpose.txt");
-    csr.compute();
+    CSR csr = CSR("/Users/carra95/Desktop/progetto_orlando_torsello/PageRank/src/test.txt");
     InDegree inDegree = InDegree(csr);
-    inDegree.compute(false);
+    inDegree.compute(true);
 
     DAAT daat = DAAT(inDegree.getScores());
 
@@ -97,20 +100,20 @@ vector<pair<int, double>> doInDegree(int topK, bool showTop) {
 }
 
 void doAll(int topK) {
-    vector<pair<int, double>> topPageRank = doPageRank(topK, false);
+    vector<pair<int, double>> topPageRank = doPageRank(topK, true);
     cout << endl;
-    vector<pair<int, double>> topHITSAut = doHITS(HITS::authority, topK, false);
+    vector<pair<int, double>> topHITSAut = doHITS(HITS::authority, topK, true);
     cout << endl;
-    vector<pair<int, double>> topInDegree = doInDegree(topK, false);
+//    vector<pair<int, double>> topInDegree = doInDegree(topK, false);
     cout << endl;
 
     double jaccard_pr_hits = Utilities::jaccard(topPageRank, topHITSAut);
-    double jaccard_pr_degree = Utilities::jaccard(topPageRank, topInDegree);
-    double jaccard_hits_degree = Utilities::jaccard(topHITSAut, topInDegree);
+    // double jaccard_pr_degree = Utilities::jaccard(topPageRank, topInDegree);
+    // double jaccard_hits_degree = Utilities::jaccard(topHITSAut, topInDegree);
     cout << "JACCARD RESULTS:" << endl;
     cout << "Jaccard PageRank - HITS Authority: " << jaccard_pr_hits << endl;
-    cout << "Jaccard PageRank - InDegree: " << jaccard_pr_degree << endl;
-    cout << "Jaccard HITS Authority - InDegree: " << jaccard_hits_degree << endl;
+    // cout << "Jaccard PageRank - InDegree: " << jaccard_pr_degree << endl;
+    // cout << "Jaccard HITS Authority - InDegree: " << jaccard_hits_degree << endl;
 }
 
 int main() {

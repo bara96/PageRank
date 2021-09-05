@@ -9,7 +9,15 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <cstring>
 #include "../Utilities//Utilities.h"
+
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
+
+
+#include <cstdio>
 
 using namespace std;
 
@@ -18,6 +26,7 @@ protected:
     string map_col_ind_filename = "./map_col_ind_filename";
     string map_row_ptr_filename = "./map_row_ptr_filename";
     string filename;
+    string introduction;
     int n_nodes = 0;
     int n_edges = 0;
     vector<double> values;
@@ -41,6 +50,8 @@ public:
 
     const string &getMapRowPtrFilename() const;
 
+    const string &getIntroduction() const;
+
     int getNNodes() const;
 
     void setNNodes(int nNodes);
@@ -60,6 +71,8 @@ public:
     int getColIndexSize() const;
 
     void setColIndexSize(int colIndexSize);
+
+    void transposeCSR();
 
     /**
      * Compute the CSR
