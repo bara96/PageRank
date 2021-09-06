@@ -118,7 +118,10 @@ int main() {
     // Start measuring time
     auto begin = std::chrono::high_resolution_clock::now();
 
-    doAll(topK);
+    //generate transposed graph if needed
+    CSR::generateTransposeCSR("../src/web-NotreDame.txt");
+
+    doAll(topK, true);
 
     // Stop measuring time and calculate the elapsed time
     auto end = std::chrono::high_resolution_clock::now();

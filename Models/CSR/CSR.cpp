@@ -72,6 +72,59 @@ void CSR::setColIndexSize(int colIndexSize) {
     col_index_size = colIndexSize;
 }
 
+void CSR::generateTransposeCSR(const string &mainFilename) {
+    string transposedFilename = regex_replace(mainFilename, std::regex(".txt"), "-transpose.txt");
+    ifstream file(transposedFilename);
+    if (!file.good()){
+        file.close();
+        cout << "GENERATING TRANSPOSED CSR START" << endl;
+        transposeCSR(mainFilename, transposedFilename);
+        cout << "GENERATED file: "+transposedFilename << endl;
+    }
+    else
+        file.close();
+}
+
+void CSR::transposeCSR(const string &mainFilename, const string &transposedFilename){
+    int fromNode = 0, toNode = 0;
+    vector<pair<int,int>> edges = vector<pair<int,int>>();
+
+    //create new file transposed
+    auto dest = ofstream (transposedFilename);
+    //Main file
+    FILE *file = nullptr;
+    char character;
+    char str[100];
+    string header;
+
+    file = Utilities::openFile(mainFilename, "r");
+    //read header
+    character = getc(file);
+    while (character == '#'){
+        fgets(str, 100 - 1, file);
+        header += "#"+string(str);  //copy header file
+        character = getc(file);
+    }
+    ungetc(character, file);
+
+    dest << header; //paste header file
+
+    //read nodes
+    while(!feof(file)){
+        fscanf(file, "%d%d", &fromNode, &toNode);
+        edges.push_back(pair<int,int>(toNode,fromNode));
+    }
+    fclose(file);
+
+    std::sort(edges.begin(), edges.end());
+    for (const auto & edge : edges){
+        // cout << "from: " << std::get<0>(*i)<< "   ";
+        // cout << "to: " << std::get<1>(*i) << endl;
+        dest << get<0>(edge)<< "   "<< get<1>(edge) << endl;
+    }
+    dest.close();
+}
+
 FILE* CSR::parseFile(const string &filenameVal) {
     FILE *f = nullptr;
     char character;

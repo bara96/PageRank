@@ -9,6 +9,9 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <cstdio>
+#include <algorithm>
+#include <regex>
 #include "../Utilities//Utilities.h"
 
 using namespace std;
@@ -60,6 +63,16 @@ public:
     int getColIndexSize() const;
 
     void setColIndexSize(int colIndexSize);
+
+    /**
+     * Check if transposed matrix is already generated
+     */
+    static void generateTransposeCSR(const string &mainFilename);
+
+    /**
+     * Generate a transposed CSR file
+     */
+    static void transposeCSR(const string &mainFilename, const string &transposedFilename);
 
     /**
      * Compute the CSR
