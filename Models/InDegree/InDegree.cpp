@@ -23,7 +23,7 @@ void InDegree::setScores(const vector<double> &scoresVal) {
 }
 
 void InDegree::compute(bool showRanking) {
-    cout << "COPUTING IN-DEGREE START" << endl;
+    cout << "COMPUTING IN-DEGREE START" << endl;
 
     inDegree();
 
