@@ -5,6 +5,7 @@
 #include "Models/HITS/HITS.h"
 #include "Models/InDegree/InDegree.h"
 #include "Models/DAAT/DAAT.h"
+#include "Models/PageRank_graph/PageRank_graph.h"
 #include <chrono>
 
 using namespace std;
@@ -95,6 +96,12 @@ vector<pair<int, double>> doInDegree(int topK, bool showTop) {
     }
     return top;
 }
+vector<pair<int, double>> doPageRank_graph(int topK, bool showTop) {
+    PageRank_graph boost;
+    string path = "../src/test.txt";
+    boost.pageRankGraph(path);
+   
+}
 
 void doAll(int topK, bool showTop = false) {
     vector<pair<int, double>> topPageRank = doPageRank(topK, showTop);
@@ -119,9 +126,11 @@ int main() {
     auto begin = std::chrono::high_resolution_clock::now();
 
     //generate transposed graph if needed
-    CSR::generateTransposeCSR("../src/web-NotreDame.txt");
+    //CSR::generateTransposeCSR("../src/web-NotreDame.txt");
 
-    doAll(topK, true);
+    //doAll(topK, true);
+    vector<pair<int, double>> topPageRank = doPageRank_graph(topK, true);
+    cout << endl;
 
     // Stop measuring time and calculate the elapsed time
     auto end = std::chrono::high_resolution_clock::now();
