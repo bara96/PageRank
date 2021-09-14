@@ -12,7 +12,7 @@ using namespace std;
 
 vector<pair<int,double>> doPageRank(int topK, bool showTop) {
     //CSR csr = CSR("../src/test.txt");
-    CSR csr = CSR("../src/web-NotreDame.txt");
+    CSR csr = CSR("../Pagerank/src/test.txt");
     csr.compute();
     PageRank pr = PageRank(csr);
     pr.compute(false);
@@ -98,7 +98,7 @@ vector<pair<int, double>> doInDegree(int topK, bool showTop) {
 }
 vector<pair<int, double>> doPageRank_graph(int topK, bool showTop) {
     PageRank_graph boost;
-    string path = "../src/test.txt";
+    string path = "../Pagerank/src/test.txt";
     boost.pageRankGraph(path);
    
 }
@@ -121,7 +121,7 @@ void doAll(int topK, bool showTop = false) {
 }
 
 int main() {
-    int topK = 30;
+    int topK = 9;
     // Start measuring time
     auto begin = std::chrono::high_resolution_clock::now();
 
@@ -129,7 +129,9 @@ int main() {
     //CSR::generateTransposeCSR("../src/web-NotreDame.txt");
 
     //doAll(topK, true);
-    vector<pair<int, double>> topPageRank = doPageRank_graph(topK, true);
+    vector<pair<int, double>> topPageRank = doPageRank(topK, true);
+    cout << endl;
+    vector<pair<int, double>> topPageRank_graph = doPageRank_graph(topK, true);
     cout << endl;
 
     // Stop measuring time and calculate the elapsed time

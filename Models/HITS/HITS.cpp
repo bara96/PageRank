@@ -105,20 +105,21 @@ int HITS::hits(bool isHubScore){
 
         for(int i=0; i<csr.getNNodes(); i++){
             rowElement = row_pointer[i + 1] - row_pointer[i];
-            for (int j=0; j < rowElement; j++) {
-                temp = temp + (csr.getValues()[currentCol] * v[col_index[currentCol]]); //product between matrix and vector
+            for (int j=0; j < rowElement; j++) {//per tutti i nodi entranti o uscenti (entranti (authority) o uscenti (hub))
+                temp = temp + (csr.getValues()[currentCol] * v[col_index[currentCol]]); //product between matrix and vector, è una sommatoria
+                //     sommatoria 
                 currentCol++;
             }
-            v_new[i] = temp;
+            v_new[i] = temp;// salvo l'hub o authority delle pagine vicine 
             temp = 0.0;
         }
 
         // v_new normalization
         for(int i=0; i<csr.getNNodes(); i++){
-            vSum = vSum + v_new[i];
+            vSum = vSum + v_new[i];//somma di tutti gli score delle pagine
         }
         for(int i=0; i<csr.getNNodes(); i++){
-            v_new[i] = v_new[i] / vSum;
+            v_new[i] = v_new[i] / vSum;//normalizzazione
         }
 
         // termination condition is defined by the case in which two consecutive iterations of the algorithm produce two almost identical p-vectors.

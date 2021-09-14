@@ -7,21 +7,29 @@
 #include "../Utilities/Utilities.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graphviz.hpp>
+#include <boost/graph/properties.hpp>
 
 using namespace boost;
 
-struct VertexProperty {
-        int id;
+struct in_degree_t {
+    int degree_out;
 };
 
 class PageRank_graph
 {
 protected:
-    typedef boost::adjacency_list<listS, vecS, undirectedS, VertexProperty> Graph;
+    typedef property<in_degree_t, int,in_degree_t> in_degree_property;
+    typedef boost::adjacency_list<vecS,
+                                  vecS,
+                                  bidirectionalS,
+                                  in_degree_property,
+                                  property<edge_weight_t, float>> Graph;
+
+    typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
     Graph g;
-    float dampingFactor = 0.85;
     string path;
     vector<double> p;
+    float dampingFactor = 0.85;
     int n_nodes = 0;
     int n_edges = 0;
 
@@ -38,7 +46,8 @@ protected:
      */
     FILE* parseFile(const string &filenameVal);
 public:
-    
+    std::map<int, float> update_map; 
+
     float getDampingFactor() const;
 
     void setDampingFactor(float dampingFactor);
@@ -58,6 +67,8 @@ public:
     void setGraph();
 
     Graph getGraph();
+
+    void computeVertexRank(Graph &g,Vertex &v, std::map<int, float> &rank_map);
     
     void pageRankGraph(string &str);
 

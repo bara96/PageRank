@@ -66,17 +66,23 @@ void PageRank::stochastization(const int *row_pointer) {
 
     // init out_links from mmap file
     // only store the values different from zero without adding "artificial" outgoing links.
-    for(int i=0; i < csr.getNNodes(); i++) {
+    for(int i=0; i <= csr.getNNodes(); i++) {
         if (row_pointer[i+1] != 0) {
-            row_elem = row_pointer[i+1] - row_pointer[i];
-            out_link.at(i) = row_elem;
+            row_elem = row_pointer[i+1] - row_pointer[i];//get out degree.
+            out_link.at(i) = row_elem;// save out degree on the vector
+            if(i+1>csr.getNNodes()){
+                out_link.at(i)+=1;
+            }
         }
     }
 
     // Normalize, making the matrix stochastic
     // divide each csr value for its out_link
-    for(int i=0; i < csr.getNNodes(); i++) {
-        row_elem = row_pointer[i+1] - row_pointer[i];
+    for(int i=0; i <= csr.getNNodes(); i++) {
+        row_elem = row_pointer[i+1] - row_pointer[i];//get out degree of all nodes.
+        if(i+1>csr.getNNodes()){
+                row_elem+=1;
+            }
         for (int j=0; j<row_elem; j++) {
             csr.getValues().at(current_col) = csr.getValues().at(current_col) / out_link.at(i);
             current_col++;
@@ -92,7 +98,7 @@ void PageRank::pageRank(const int *row_pointer, const int *col_index) {
     int currentCol = 0;
 
     // Initial probability distribution
-    p = vector<double>(csr.getNNodes(), 1.0 / csr.getNNodes());
+    p = vector<double>(csr.getNNodes() + 1, 1.0 / csr.getNNodes());
 
     vector<double> p_new;
     while (loop){
@@ -104,17 +110,20 @@ void PageRank::pageRank(const int *row_pointer, const int *col_index) {
 
         // PageRank modified algorithm
         // Initialize the teleportation matrix
-        for(int i=0; i<csr.getNNodes(); i++){
+        for(int i=0; i<=csr.getNNodes(); i++){
             rowElement = row_pointer[i + 1] - row_pointer[i];
+             if(i+1>csr.getNNodes()){
+                rowElement+=1;
+            }
             for (int j=0; j < rowElement; j++) {
-                p_new.at(col_index[currentCol]) = p_new[col_index[currentCol]] + csr.getValues().at(currentCol) * p.at(i);
+                p_new.at(col_index[currentCol]) += csr.getValues().at(currentCol) * p.at(i); 
                 currentCol++;
             }
         }
 
         // Final Matrix after removing dangling nodes and adding teleportation
         // Add a link from each page to every page and give each link a small transition probability controlled by the dampingFactor
-        for(int i=0; i<csr.getNNodes(); i++){
+        for(int i=0; i<=csr.getNNodes(); i++){
             p_new.at(i) = dampingFactor * p_new.at(i) + (1.0 - dampingFactor) / csr.getNNodes();
         }
 
@@ -122,7 +131,7 @@ void PageRank::pageRank(const int *row_pointer, const int *col_index) {
         loop = Utilities::checkTermination(p, p_new, csr.getNNodes(), 0.000005);
 
         // Update p[]
-        for (int i=0; i<csr.getNNodes();i++){
+        for (int i=0; i<=csr.getNNodes();i++){
             p.at(i) = p_new.at(i);
         }
 
