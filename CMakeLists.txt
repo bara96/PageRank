@@ -23,8 +23,5 @@ add_executable(PageRank main.cpp
                 Models/DAAT/DAAT.h 
                 Models/MinHeap/MinHeap.cpp 
                 Models/MinHeap/MinHeap.h 
-                Models/HITS/HITS.cpp 
-                Models/HITS/HITS.h 
-                Models/InDegree/InDegree.cpp 
-                Models/InDegree/InDegree.h)
+               )
 target_link_libraries( PageRank ${Boost_LIBRARIES} )

@@ -11,18 +11,14 @@
 
 using namespace boost;
 
-struct in_degree_t {
-    int degree_out;
-};
 
 class PageRank_graph
 {
 protected:
-    typedef property<in_degree_t, int,in_degree_t> in_degree_property;
     typedef boost::adjacency_list<vecS,
                                   vecS,
                                   bidirectionalS,
-                                  in_degree_property,
+                                  no_property,
                                   property<edge_weight_t, float>> Graph;
 
     typedef typename graph_traits<Graph>::vertex_descriptor Vertex;
@@ -46,7 +42,7 @@ protected:
      */
     FILE* parseFile(const string &filenameVal);
 public:
-    std::map<int, float> update_map; 
+    std::vector<double> update_vec; 
 
     float getDampingFactor() const;
 
@@ -64,15 +60,13 @@ public:
 
     void setNEdges(int nEdges);
 
-    void setGraph();
+    void initGraph();
 
     Graph getGraph();
 
-    void computeVertexRank(Graph &g,Vertex &v, std::map<int, float> &rank_map);
+    void computeVertexRank(Graph &g,Vertex &v, std::vector<double> &rank_vector);
     
-    void pageRankGraph(string &str);
-
-    void compute(Graph *g);
+    std::vector<double> pageRankGraph(string &str);
 
 };
 
